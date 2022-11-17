@@ -1,0 +1,440 @@
+title:
+  en: Swiss Job Tracker
+  de: ~
+  fr: ~
+  it: ~
+source.name:
+  en: KOF Swiss Economic Institute
+  de: ~
+  fr: ~
+  it: ~
+source.url:
+  - https://kof.ch
+units:
+  - ~
+aggregate:
+  all: none
+dim.order:
+  - by
+  - variable
+  - data_pool
+  - type
+hierarchy:
+  by:
+    total:
+      canton: ~
+      isco: ~
+      noga: ~
+  variable:
+    total:
+      ab: ~
+      c: ~
+      d: ~
+      e: ~
+      f: ~
+      g: ~
+      h: ~
+      i: ~
+      j: ~
+      k: ~
+      l: ~
+      m: ~
+      'n': ~
+      o: ~
+      p: ~
+      q: ~
+      r: ~
+      st: ~
+      u: ~
+      1: ~
+      2: ~
+      3: ~
+      4: ~
+      5: ~
+      6: ~
+      7: ~
+      8: ~
+      9: ~
+      ag: ~
+      ai: ~
+      ar: ~
+      be: ~
+      bl: ~
+      bs: ~
+      fr: ~
+      ge: ~
+      gl: ~
+      gr: ~
+      ju: ~
+      lu: ~
+      ne: ~
+      nw: ~
+      ow: ~
+      sg: ~
+      sh: ~
+      so: ~
+      sz: ~
+      tg: ~
+      ti: ~
+      ur: ~
+      vd: ~
+      vs: ~
+      zg: ~
+      zh: ~
+  data_pool:
+    raw: ~
+    clean: ~
+    companies: ~
+  type:
+    idx: ~
+    share_clean: ~
+labels:
+  dimnames:
+    by:
+      en: Grouped by
+      de: ~
+      fr: ~
+      it: ~
+    variable:
+      en: Variable
+      de: ~
+      fr: ~
+      it: ~
+    data_pool:
+      en: Data Pool underlying calculation
+      de: ~
+      fr: ~
+      it: ~
+    type:
+      en: Type of series
+      de: ~
+      fr: ~
+      it: ~
+  by:
+    total:
+      en: Total
+      de: ~
+      fr: ~
+      it: ~
+    canton:
+      en: Canton
+      de: ~
+      fr: ~
+      it: ~
+    isco:
+      en: Occupation
+      de: ~
+      fr: ~
+      it: ~
+    noga:
+      en: Industry
+      de: ~
+      fr: ~
+      it: ~
+  variable:
+    total:
+      en: Total
+    ab:
+      en: Agriculture and Mining
+      de: ~
+      fr: ~
+      it: ~
+    c:
+      en: Manufacturing
+      de: ~
+      fr: ~
+      it: ~
+    d:
+      en: Electricity, Gas, Steam and Air-Conditioning Supply
+      de: ~
+      fr: ~
+      it: ~
+    e:
+      en: Water Supply; Sewerage, Waste Management and Remediation Activities
+      de: ~
+      fr: ~
+      it: ~
+    f:
+      en: Construction
+      de: ~
+      fr: ~
+      it: ~
+    g:
+      en: Wholesale and Retail Trade; Repair of Motor Vehicles and Motorcycles
+      de: ~
+      fr: ~
+      it: ~
+    h:
+      en: Transportation and Storage
+      de: ~
+      fr: ~
+      it: ~
+    i:
+      en: Accommodation and Food Service Activities
+      de: ~
+      fr: ~
+      it: ~
+    j:
+      en: Information and Communication
+      de: ~
+      fr: ~
+      it: ~
+    k:
+      en: Financial and Insurance Activities
+      de: ~
+      fr: ~
+      it: ~
+    l:
+      en: Real Estate Activities
+      de: ~
+      fr: ~
+      it: ~
+    m:
+      en: Professional, Scientific and Technical Activities
+      de: ~
+      fr: ~
+      it: ~
+    'n':
+      en: Administrative and Support Service Activities
+      de: ~
+      fr: ~
+      it: ~
+    o:
+      en: Public Administration and Defence; Compulsory Social Security
+      de: ~
+      fr: ~
+      it: ~
+    p:
+      en: Education
+      de: ~
+      fr: ~
+      it: ~
+    q:
+      en: Human Health and Social Work Activities
+      de: ~
+      fr: ~
+      it: ~
+    r:
+      en: Arts, Entertainment and Recreation
+      de: ~
+      fr: ~
+      it: ~
+    st:
+      en: Activities of Households, Other Services
+      de: ~
+      fr: ~
+      it: ~
+    u:
+      en: Activities of Extraterritorial Organisations and Bodies
+      de: ~
+      fr: ~
+      it: ~
+    1:
+      en: Managers
+      de: ~
+      fr: ~
+      it: ~
+    2:
+      en: Professionals
+      de: ~
+      fr: ~
+      it: ~
+    3:
+      en: Technicians and associate professionals
+      de: ~
+      fr: ~
+      it: ~
+    4:
+      en: Clerical support workers
+      de: ~
+      fr: ~
+      it: ~
+    5:
+      en: Service and sales workers
+      de: ~
+      fr: ~
+      it: ~
+    6:
+      en: Skilled agricultural, forestry and fishery workers
+      de: ~
+      fr: ~
+      it: ~
+    7:
+      en: Craft and related trades workers
+      de: ~
+      fr: ~
+      it: ~
+    8:
+      en: Plant and machine operators and assemblers
+      de: ~
+      fr: ~
+      it: ~
+    9:
+      en: Elementary occupations
+      de: ~
+      fr: ~
+      it: ~
+    ag:
+      en: Aargau
+      de: ~
+      fr: ~
+      it: ~
+    ai:
+      en: Appenzell Innerrhoden
+      de: ~
+      fr: ~
+      it: ~
+    ar:
+      en: Appenzell Ausserrhoden
+      de: ~
+      fr: ~
+      it: ~
+    be:
+      en: Bern
+      de: ~
+      fr: ~
+      it: ~
+    bl:
+      en: Basel-Landschaft
+      de: ~
+      fr: ~
+      it: ~
+    bs:
+      en: Basel-Stadt
+      de: ~
+      fr: ~
+      it: ~
+    fr:
+      en: Fribourg
+      de: ~
+      fr: ~
+      it: ~
+    ge:
+      en: Genève
+      de: ~
+      fr: ~
+      it: ~
+    gl:
+      en: Glarus
+      de: ~
+      fr: ~
+      it: ~
+    gr:
+      en: Grishun
+      de: ~
+      fr: ~
+      it: ~
+    ju:
+      en: Jura
+      de: ~
+      fr: ~
+      it: ~
+    lu:
+      en: Luzern
+      de: ~
+      fr: ~
+      it: ~
+    ne:
+      en: Neuchâtel
+      de: ~
+      fr: ~
+      it: ~
+    nw:
+      en: Nidwalden
+      de: ~
+      fr: ~
+      it: ~
+    ow:
+      en: Obwalden
+      de: ~
+      fr: ~
+      it: ~
+    sg:
+      en: St. Gallen
+      de: ~
+      fr: ~
+      it: ~
+    sh:
+      en: Schaffhausen
+      de: ~
+      fr: ~
+      it: ~
+    so:
+      en: Solothurn
+      de: ~
+      fr: ~
+      it: ~
+    sz:
+      en: Schwyz
+      de: ~
+      fr: ~
+      it: ~
+    tg:
+      en: Thurgau
+      de: ~
+      fr: ~
+      it: ~
+    ti:
+      en: Ticino
+      de: ~
+      fr: ~
+      it: ~
+    ur:
+      en: Uri
+      de: ~
+      fr: ~
+      it: ~
+    vd:
+      en: Vaud
+      de: ~
+      fr: ~
+      it: ~
+    vs:
+      en: Valais
+      de: ~
+      fr: ~
+      it: ~
+    zg:
+      en: Zug
+      de: ~
+      fr: ~
+      it: ~
+    zh:
+      en: Zürich
+      de: ~
+      fr: ~
+      it: ~
+  data_pool:
+    raw:
+      en: All data
+      de: ~
+      fr: ~
+      it: ~
+    clean:
+      en: Data cleaned of outliers
+      de: ~
+      fr: ~
+      it: ~
+    companies:
+      en: Only data directly from company websites
+      de: ~
+      fr: ~
+      it: ~
+  type:
+    idx:
+      en: Index (First week of 2020 = 100)
+      de: ~
+      fr: ~
+      it: ~
+    share_clean:
+      en: Share of ads that passed cleaning
+      de: ~
+      fr: ~
+      it: ~
+details:
+  en: ~
+  de: ~
+  fr: ~
+  it: ~
+utc.updated: 2022-08-18 10:32:12
+sha1: abc123

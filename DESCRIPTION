@@ -1,0 +1,24 @@
+Package: chjobtracker
+Type: Package
+Version: 1.0.0
+Title: NRP77 Computation Backend
+Description: NRP77 Labor Market Dasboard Computation Backend.
+Author: "Jeremias Klaeui jeremias.klaeui@unil.ch [aut,cre]", "Matthias Bannert bannert@kof.ethz.ch [aut]", "Joseph Winkelmann jwinkelmann@g.harvard.edu [aut], Severin Thoeni thoenis@kof.ethz.ch [aut]", "Michael Siegenthaler siegenthaler@kof.ethz.ch [crb]", "Daniel Kopp kopp@kof.ethz.ch [crb]"
+Depends:
+    R (>= 3.5.0),
+    data.table
+Imports:
+  RPostgres,
+  urltools,
+  jsonlite,
+  DBI,
+  httr,
+  tsbox
+Date: 2021-09-10
+License: GPL-2
+LazyData: true
+Maintainer: Jeremias Klaeui <jeremias.klaeui@unil.ch>
+NeedsCompilation: no
+Packaged: 2018-04-24 11:21:04 UTC; mbannert
+RoxygenNote: 7.1.2
+Encoding: UTF-8
