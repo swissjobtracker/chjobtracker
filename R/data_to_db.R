@@ -170,7 +170,13 @@ x28_to_db <- function(con,
       } else {
         dta <- dta[advertisement_id %in% newer_ids]
       }
-      x28_upsert_table(con, dta[, columns[[t]], with = FALSE], t, field.type_overrides[[t]])
+      xx <- dta[, columns[[t]], with = FALSE]
+      if(t == "advertisement_metadata") {
+        browser()
+        yy <- xx[,list(count=.N, name, phrase),by=list(advertisement_id, metadata_id, type, source)][count > 1 & name == "Closing"]
+        xx <- xx[!yy, on=list(advertisement_id, metadata_id, type, source, name)]
+      }
+      x28_upsert_table(con, xx, t, field.type_overrides[[t]])
     }
     dbCommit(con)
   },
