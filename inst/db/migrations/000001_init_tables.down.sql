@@ -1,0 +1,13 @@
+SET ROLE kofadmin;
+DROP TABLE IF EXISTS "event_log";
+DROP TABLE IF EXISTS "filtered_advertisements";
+DROP TABLE IF EXISTS "company_addresses";
+DROP TABLE IF EXISTS "company_metadata";
+DROP TABLE IF EXISTS "advertisement_metadata";
+DROP TABLE IF EXISTS "advertisement_postalcode";
+DROP TABLE IF EXISTS "advertisement_canton";
+DROP TABLE IF EXISTS "advertisement_country";
+DROP TABLE IF EXISTS "advertisement_education_levels";
+DROP TABLE IF EXISTS "advertisement_positions";
+DROP TABLE IF EXISTS "advertisement_details";
+DROP TABLE IF EXISTS "advertisements";

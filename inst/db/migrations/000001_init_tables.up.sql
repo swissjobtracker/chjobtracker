@@ -1,4 +1,5 @@
-CREATE TABLE "x28"."advertisements" (
+SET ROLE kofadmin;
+CREATE TABLE IF NOT EXISTS "advertisements" (
   "id" text PRIMARY KEY,
   "duplicategroup" uuid,
   "company_id" integer,
@@ -26,38 +27,38 @@ CREATE TABLE "x28"."advertisements" (
   "company_size_max" integer
 );
 
-CREATE TABLE "x28"."advertisement_details" (
+CREATE TABLE IF NOT EXISTS "advertisement_details" (
   "advertisement_id" text REFERENCES x28.advertisements(id),
   "title" text,
   "raw_text" text
 );
 
-CREATE TABLE "x28"."advertisement_positions" (
+CREATE TABLE IF NOT EXISTS "advertisement_positions" (
   "advertisement_id" text REFERENCES x28.advertisements(id),
   "position" text
 );
 
-CREATE TABLE "x28"."advertisement_education_levels" (
+CREATE TABLE IF NOT EXISTS "advertisement_education_levels" (
   "advertisement_id" text REFERENCES x28.advertisements(id),
   "education" text
 );
 
-CREATE TABLE "x28"."advertisement_country" (
+CREATE TABLE IF NOT EXISTS "advertisement_country" (
   "advertisement_id" text REFERENCES x28.advertisements(id),
   "country" text
 );
 
-CREATE TABLE "x28"."advertisement_canton" (
+CREATE TABLE IF NOT EXISTS "advertisement_canton" (
   "advertisement_id" text REFERENCES x28.advertisements(id),
   "canton" text
 );
 
-CREATE TABLE "x28"."advertisement_postalcode" (
+CREATE TABLE IF NOT EXISTS "advertisement_postalcode" (
   "advertisement_id" text REFERENCES x28.advertisements(id),
   "postalcode" integer
 );
 
-CREATE TABLE "x28"."advertisement_metadata" (
+CREATE TABLE IF NOT EXISTS "advertisement_metadata" (
   "advertisement_id" text REFERENCES x28.advertisements(id),
   "metadata_id" text,
   "type" text,
@@ -67,7 +68,7 @@ CREATE TABLE "x28"."advertisement_metadata" (
   "phrase" text
 );
 
-CREATE TABLE "x28"."company_metadata" (
+CREATE TABLE IF NOT EXISTS "company_metadata" (
   "advertisement_id" text REFERENCES x28.advertisements(id),
   "company_id" integer,
   "metadata_id" integer,
@@ -75,7 +76,7 @@ CREATE TABLE "x28"."company_metadata" (
   "name" text
 );
 
-CREATE TABLE "x28"."company_addresses" (
+CREATE TABLE IF NOT EXISTS "company_addresses" (
   "advertisement_id" text REFERENCES x28.advertisements(id),
   "company_id" integer,
   "country" text,
@@ -84,14 +85,14 @@ CREATE TABLE "x28"."company_addresses" (
   "primary" boolean
 );
 
-CREATE TABLE "x28"."filtered_advertisements" (
+CREATE TABLE IF NOT EXISTS "filtered_advertisements" (
   "id" text REFERENCES x28.advertisements(id),
   "created" timestamp,
   "deleted" timestamp,
   "from_portal" boolean
 );
 
-CREATE TABLE "x28"."event_log" (
+CREATE TABLE IF NOT EXISTS "event_log" (
   "t" timestamp DEFAULT CURRENT_TIMESTAMP,
   "event" text NOT NULL,
   "details" text DEFAULT NULL

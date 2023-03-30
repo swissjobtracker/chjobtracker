@@ -38,3 +38,53 @@ All this should not have to be done anymore as new data is read in live.
 # Database structure
 
 A diagram of the planned tables can be found at <https://dbdiagram.io/d/6025332880d742080a3a2613>
+
+The database structure can be recreated with
+[migrate](https://github.com/golang-migrate/migrate) or by running the scripts
+in `inst/db/migrations`.
+
+To add a new migration:
+
+```bash
+migrate create -dir inst/db/migrations -ext sql -seq "<name>"
+```
+
+Then edit the newly created files (both `up.sql` and `down.sql`).
+
+To test the migrations, the easiest way is to use docker:
+
+1. Start the postgres docker container:
+
+```bash
+docker run --rm -it --name migration_test -e POSTGRES_PASSWORD="<password>" -e POSTGRES_USER=kofadmin -e POSTGRES_DB=nrp77 -p 5432:5432 postgres
+```
+
+2. [Optional] Create the schema where the tables are to be created
+
+```bash
+podman exec -it migration_test psql -U kofadmin -W nrp77 -c "CREATE SCHEMA x28"
+```
+
+3. Run the migration
+
+```bash
+# If the schema was not created, remove "search_path=x28"
+migrate -database "postgresql://kofadmin:<password>@localhost/nrp77?search_path=x28&sslmode=disable" -path inst/db/migrations up
+```
+
+4. Test also rolling back the migration
+
+```bash
+# If the schema was not created, remove "search_path=x28"
+migrate -database "postgresql://kofadmin:<password>@localhost/nrp77?search_path=x28&sslmode=disable" -path inst/db/migrations down 1
+```
+
+At any point you can inspect the database state by connecting with `psql` and
+running SQL queries:
+
+```bash
+podman exec -it migration_test psql -U kofadmin -W nrp77
+```
+
+Once the migration is ready to be applied, someone with the correct access to
+the database must run the migration on the production system.
