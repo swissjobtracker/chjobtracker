@@ -62,7 +62,7 @@ docker run --rm -it --name migration_test -e POSTGRES_PASSWORD="<password>" -e P
 2. [Optional] Create the schema where the tables are to be created
 
 ```bash
-podman exec -it migration_test psql -U kofadmin -W nrp77 -c "CREATE SCHEMA x28"
+docker exec -it migration_test psql -U kofadmin -W nrp77 -c "CREATE SCHEMA x28"
 ```
 
 3. Run the migration
@@ -83,7 +83,7 @@ At any point you can inspect the database state by connecting with `psql` and
 running SQL queries:
 
 ```bash
-podman exec -it migration_test psql -U kofadmin -W nrp77
+docker exec -it migration_test psql -U kofadmin -W nrp77
 ```
 
 Once the migration is ready to be applied, someone with the correct access to
