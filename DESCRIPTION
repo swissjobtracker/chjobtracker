@@ -1,6 +1,6 @@
 Package: chjobtracker
 Type: Package
-Version: 1.0.0
+Version: 1.1.0
 Title: NRP77 Computation Backend
 Description: NRP77 Labor Market Dasboard Computation Backend.
 Author: "Jeremias Klaeui jeremias.klaeui@unil.ch [aut,cre]", "Matthias Bannert bannert@kof.ethz.ch [aut]", "Joseph Winkelmann jwinkelmann@g.harvard.edu [aut], Severin Thoeni thoenis@kof.ethz.ch [aut]", "Michael Siegenthaler siegenthaler@kof.ethz.ch [crb]", "Daniel Kopp kopp@kof.ethz.ch [crb]"
