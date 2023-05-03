@@ -13,12 +13,13 @@ Imports:
   jsonlite,
   DBI,
   httr,
-  tsbox
+  tsbox,
+  magrittr
 Date: 2021-09-10
 License: GPL-2
 LazyData: true
 Maintainer: Jeremias Klaeui <jeremias.klaeui@unil.ch>
 NeedsCompilation: no
 Packaged: 2018-04-24 11:21:04 UTC; mbannert
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Encoding: UTF-8
