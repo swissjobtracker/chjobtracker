@@ -152,7 +152,10 @@ get_stocks <- function(ads,
 
 save_indicators <- function(con, indicators, date = Sys.Date()) {
   affected <- DBI::dbSendStatement(
-    con, "INSERT INTO x28.indicator_history VALUES ($1, $2)",
+    con, paste(
+      "INSERT INTO x28.indicator_history VALUES ($1, $2)",
+      "ON CONFLICT (date) DO UPDATE SET values = excluded.values"
+    ),
     params = list(date, indicators)
   )
 
