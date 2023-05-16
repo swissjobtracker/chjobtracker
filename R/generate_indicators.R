@@ -7,7 +7,7 @@ library(magrittr)
 #'
 #' @return a tslist with all indicator series
 #' @export
-generate_indicators <- function(con, verbose = FALSE, drop_lichtenstein = TRUE) {
+generate_indicators <- function(con, con_main, verbose = FALSE, drop_lichtenstein = TRUE) {
   prnt <- function(x) {
     if (verbose) message(x)
   }
@@ -27,73 +27,84 @@ generate_indicators <- function(con, verbose = FALSE, drop_lichtenstein = TRUE) 
   ads_prepared <- prepare_ads(ads, verbose)
   ads_prepared[, data.table::uniqueN(domain), by = from_portal]
 
+  prnt("Adding canton, occupation and indutry to the ads")
+  ads_noga <- ads_merge_noga(con, ads_prepared)
+  ads_isco <- ads_merge_isco(con, ads_prepared)
+  ads_canton <- ads_merge_canton(con, ads_prepared)
 
-  # (source, date) pairs to include
-  # date will only be fridays. do further restrict to only "clean" portals
-  # use only rows with include == TRUE
+
+  prnt("Compute this week's stock of ads by source")
+  stocks <- get_stocks(ads_prepared)
+  stocks_noga <- get_stocks(ads_noga,by.cols = "noga_letter")
+  stocks_isco <- get_stocks(ads_isco,by.cols = "isco_1d")[, isco_1d:=as.character(isco_1d)]
+  stocks_canton <- get_stocks(ads_canton, by.cols = "canton")
+
+  prnt("Save the stocks to the DB, they will be next week's vintage lagged stock")
+  affected <- save_stocks(con, stocks, stocks_noga, stocks_isco, stocks_canton)
+  prnt(sprintf("Added %d rows", affected))
+
+
+
+  prnt("Get the vintage stocks from last week")
+  newest_date<-weeks[, max(date)] # which is the date of last week?
+  prnt(paste("We compute the index for", newest_date, "using the vintage stock from", newest_date-7))
+  vintage_stocks<-get_vintage_stocks(con, newest_date-7)
+
+
+  prnt("Run the filter algorithm, which portals are stable and can be included")
   week_inclusion <- portal_filter_within_portal_hampler(
     ads_prepared,
     weeks_not_flagged = 5, mad_factor = 4
   )
 
-  prnt("Calculating total...")
-  weeks <- get_stocks(ads_prepared)
-  srs_tot <- make_series(ads_prepared, week_inclusion)
 
-  prnt("Calculating by noga...")
-  ads_noga <- ads_merge_noga(con, ads_prepared)
-  weeks_noga <- get_stocks(
-    ads_noga,
-    by.cols = "noga_letter"
-  )
-  srs_noga <- make_series(ads_noga, week_inclusion, by.cols = "noga_letter")
-  setnames(srs_noga, "noga_letter", "noga")
+  prnt("Compute the growth rate between today's and last weeks stock using the included portals")
+  wow_tot<-growth_rate_from_stocks(stocks[date==newest_date], vintage_stocks$total, week_inclusion)
+  wow_noga<-growth_rate_from_stocks(stocks_noga[date==newest_date], vintage_stocks$noga, week_inclusion, by.cols = c("noga_letter"))
+  setnames(wow_noga, "noga_letter", "noga")
+  wow_isco<-growth_rate_from_stocks(stocks_isco[date==newest_date], vintage_stocks$isco, week_inclusion, by.cols = c("isco_1d"))
+  setnames(wow_isco, "isco_1d", "isco")
+  wow_canton<-growth_rate_from_stocks(stocks_canton[date==newest_date],  vintage_stocks$canton, week_inclusion, by.cols = c("canton"))
 
-  prnt("Calculating by isco...")
-  ads_isco <- ads_merge_isco(con, ads_prepared)
-  weeks_isco <- get_stocks(
-    ads_isco,
-    by.cols = "isco_1d"
-  )
-  srs_isco <- make_series(ads_isco, week_inclusion, by.cols = "isco_1d")
-  setnames(srs_isco, "isco_1d", "isco")
+  # convert them to the format of the vintage stocks
+  wow_with_keys<-c(output_to_tslist(wow_tot), output_to_tslist(wow_noga, by="noga"), output_to_tslist(wow_canton, by="canton"), output_to_tslist(wow_isco, by="isco"))
+  wow_with_keys <- lapply(wow_with_keys, function(x){
+    a<-as.data.table(x, keep.rownames = "date")
+    names(a)<-c("date", "value")
+    a
+  }
+  ) %>% rbindlist(idcol="key")
 
-  prnt("Calculating by canton...")
-  ads_canton <- ads_merge_canton(con, ads_prepared)
-  weeks_canton <- get_stocks(
-    ads_canton,
-    by.cols = "canton"
-  )
-  srs_canton <- make_series(ads_canton, week_inclusion, by.cols = "canton")
 
-  affected <- save_stocks(con, weeks, weeks_noga, weeks_isco, weeks_canton)
-  prnt(sprintf("Added %d rows", affected))
 
-  prnt(
-    paste(
-      "Manual changes to indices (removing values that don't have",
-      "publishable quality)"
-    )
-  )
-  srs_canton <- manual_changes_to_canton_indices(srs_canton)
+  prnt("Get the index values for the weeks up to last week")
+  index_until_now<-get_indices_from_db(con_main)
+  index_last_week<-index_until_now[date==newest_date-7,.(date_wlag=date, index_wlag=index, key)]
+
+  prnt("Compute today's index")
+  # by multiplying the latest value with the growth rate
+  update<-merge(index_last_week,
+                wow_with_keys, by="key")
+  # for the sum we just take the new value
+  update[key %like% "sum_clean", index:=value]
+  # for the indices we multiply the last value with the growth rate
+  update[!(key %like%  "sum_clean"), index:=value*index_wlag]
+
+
+
+  # prnt(paste(
+  #     "Manual changes to indices (removing values that don't have",
+  #     "publishable quality)"))
+  # srs_canton <- manual_changes_to_canton_indices(srs_canton)
+  # TODO: We have to implement that when we compute the one-off index
+
+
 
   prnt("Converting to ts...")
-  tsl_tot <- output_to_tslist(srs_tot)
-
-  tsl_noga <- output_to_tslist(srs_noga, "noga")
-
-  tsl_isco <- output_to_tslist(srs_isco, "isco")
-
-  tsl_canton <- output_to_tslist(srs_canton, "canton")
-
-
-  c(
-    tsl_tot,
-    tsl_noga,
-    tsl_isco,
-    tsl_canton
-  )
+  as.list(tsbox::ts_xts(update[, .(time=date, value=index, id=key)]))
 }
+
+
 
 
 #' Convert data.table output of make_series to a ts list
@@ -194,4 +205,40 @@ save_stocks <- function(con, weeks, weeks_noga, weeks_isco, weeks_canton) {
   # to JSON
   json_indicators <- jsonlite::toJSON(indicators)
   save_indicators(con, json_indicators)
+}
+
+
+get_vintage_stocks <- function(con, date=Sys.Date()-7){
+
+  db_result <- DBI::dbGetQuery(
+    con, "SELECT values FROM x28.indicator_history WHERE date = $1",
+    params = list(as.Date(date))
+  )
+
+ # format the jsons as a list of data.tables
+ list<-jsonlite::fromJSON(db_result[1,1])
+ out<-list()
+ out[["total"]]<-list$total %>% t() %>% as.data.table(keep.rownames = "source") %>% cbind(list(vintage_date=date))
+ names(out[["total"]])[2]<-"N_vintage"
+ names(out[["total"]])[3]<-"vintage_date"
+ out[["total"]][, N_vintage:=as.numeric(N_vintage)]
+
+ out[["canton"]]<-list$canton %>% lapply(function(x){
+   rbindlist(lapply(x, function(N_vintage) cbind(as.data.table(N_vintage), as.data.table(list("vintage_date"=date)))), idcol = "source")
+ }) %>% rbindlist(idcol = "canton")
+ out[["canton"]][, N_vintage:=as.numeric(N_vintage)]
+
+ out[["noga"]]<-list$noga %>% lapply(function(x){
+   rbindlist(lapply(x, function(N_vintage) cbind(as.data.table(N_vintage), as.data.table(list("vintage_date"=date)))), idcol = "source")
+ }) %>% rbindlist(idcol = "noga_letter")
+ out[["noga"]][, N_vintage:=as.numeric(N_vintage)]
+
+
+ out[["isco"]]<-list$isco %>% lapply(function(x){
+   rbindlist(lapply(x, function(N_vintage) cbind(as.data.table(N_vintage), as.data.table(list("vintage_date"=date)))), idcol = "source")
+ }) %>% rbindlist(idcol = "isco_1d")
+ out[["noga"]][, N_vintage:=as.numeric(N_vintage)]
+
+
+ return(out)
 }
