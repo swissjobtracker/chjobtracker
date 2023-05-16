@@ -7,7 +7,7 @@ library(magrittr)
 #'
 #' @return a tslist with all indicator series
 #' @export
-generate_indicators <- function(con, con_main, verbose = FALSE, drop_lichtenstein = TRUE) {
+generate_indicators <- function(con, con_main, date=NULL, verbose = FALSE, drop_lichtenstein = TRUE) {
   prnt <- function(x) {
     if (verbose) message(x)
   }
@@ -27,7 +27,7 @@ generate_indicators <- function(con, con_main, verbose = FALSE, drop_lichtenstei
   ads_prepared <- prepare_ads(ads, verbose)
   ads_prepared[, data.table::uniqueN(domain), by = from_portal]
 
-  prnt("Adding canton, occupation and indutry to the ads")
+  prnt("Adding canton, occupation and industry to the ads")
   ads_noga <- ads_merge_noga(con, ads_prepared)
   ads_isco <- ads_merge_isco(con, ads_prepared)
   ads_canton <- ads_merge_canton(con, ads_prepared)
@@ -39,17 +39,34 @@ generate_indicators <- function(con, con_main, verbose = FALSE, drop_lichtenstei
   stocks_isco <- get_stocks(ads_isco,by.cols = "isco_1d")[, isco_1d:=as.character(isco_1d)]
   stocks_canton <- get_stocks(ads_canton, by.cols = "canton")
 
+
+  # Handle the date
+  if(is.null(date)){
+    newest_date<-stocks[, max(date)] # which is the date of last week?
+  }else{
+    newest_date<-date
+  }
+  if( min(stocks[date==newest_date, .N],
+      stocks_noga[date==newest_date, .N],
+      stocks_canton[date==newest_date, .N],
+      stocks_isco[date==newest_date, .N]) == 0){
+    stop("No ads found for the index computation date")
+  }
+  prnt(paste("We compute the index for", newest_date, "using the vintage stock from", newest_date-7))
+
+
+
+
   prnt("Save the stocks to the DB, they will be next week's vintage lagged stock")
   affected <- save_stocks(con, stocks, stocks_noga, stocks_isco, stocks_canton)
   prnt(sprintf("Added %d rows", affected))
 
 
 
-  prnt("Get the vintage stocks from last week")
-  newest_date<-weeks[, max(date)] # which is the date of last week?
-  prnt(paste("We compute the index for", newest_date, "using the vintage stock from", newest_date-7))
-  vintage_stocks<-get_vintage_stocks(con, newest_date-7)
 
+
+  prnt("Get the vintage stocks from last week")
+  vintage_stocks<-get_vintage_stocks(con, newest_date-7)
 
   prnt("Run the filter algorithm, which portals are stable and can be included")
   week_inclusion <- portal_filter_within_portal_hampler(
@@ -214,6 +231,9 @@ get_vintage_stocks <- function(con, date=Sys.Date()-7){
     con, "SELECT values FROM x28.indicator_history WHERE date = $1",
     params = list(as.Date(date))
   )
+  if(nrow(db_result)==0){
+    stop("No vintage stocks for a week before the index computation date")
+  }
 
  # format the jsons as a list of data.tables
  list<-jsonlite::fromJSON(db_result[1,1])
