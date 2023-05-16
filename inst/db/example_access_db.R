@@ -22,3 +22,8 @@ con_main <- db_connection_create("kofdb",
                                  "archivedb.kof.ethz.ch",
                                  passwd = Sys.getenv("PG_PASSWORD"))
 
+
+new_idx<-generate_indicators(con, con_main, verbose = T, drop_lichtenstein = TRUE)
+
+
+test<-generate_indicators(con, con_main, date=Sys.Date(), verbose = T, drop_lichtenstein = TRUE)
