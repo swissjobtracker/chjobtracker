@@ -82,7 +82,7 @@ DBI::dbClearResult(affected)
 
 db_result <- DBI::dbGetQuery(
         con, "SELECT values FROM x28.indicator_history WHERE date = $1",
-        params = list(as.Date("2023-02-01"))
+        params = list(as.Date("2023-05-05"))
 )
 
 previous_indicators <- jsonlite::fromJSON(db_result$values)
