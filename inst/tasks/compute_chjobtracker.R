@@ -1,0 +1,38 @@
+library(chjobtracker)
+library(tsbox)
+library(timeseriesdb)
+library(RPostgres)
+
+con_nrp <- dbConnect(Postgres(),
+                     dbname = "nrp77",
+                     host = "archivedb.kof.ethz.ch",
+                     user = "kofdocker",
+                     password = Sys.getenv("PG_PASSWORD"),
+                     timezone = "Europe/Berlin")
+
+con_main <- db_connection_create("kofdb",
+                                 "kofdocker",
+                                 "archivedb.kof.ethz.ch",
+                                 passwd = Sys.getenv("PG_PASSWORD"))
+
+tsl <- generate_indicators(con_nrp, TRUE)
+
+cat("generated!\n")
+
+pblc_series <- tsl[grepl("clean\\.idx$", names(tsl))]
+rest_series <- tsl[!(names(tsl) %in% names(pblc_series))]
+
+message("Storing...")
+db_ts_store(con_main, pblc_series, "timeseries_access_public", release_date = as.POSIXct(paste0(Sys.Date(), " 12:00:00")))
+db_ts_store(con_main, rest_series, "timeseries_access_restricted")
+db_ts_assign_dataset(con_main, names(tsl), "ch.kof.jobtracker_all")
+
+# Recreate the collection in case keys get added/removed
+message("Resetting collection...")
+db_collection_delete(con_main, "ch.kof.jobtracker", "datenservice_public")
+db_collection_add_ts(con_main, "ch.kof.jobtracker", names(pblc_series), user = "datenservice_public")
+
+message("done!")
+
+db_connection_close(con_nrp)
+db_connection_close(con_main)
