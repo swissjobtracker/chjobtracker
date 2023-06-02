@@ -168,7 +168,7 @@ update[key %like% "sum_clean", index:=value]
 
 # This is the output ------------------------------------------------------
 
-as.list(tsbox::ts_xts(update[, .(time=date, value=index, id=key)]))
+out<-as.list(tsbox::ts_xts(update[, .(time=date, value=index, id=key)]))
 
 
 # data table with all to plot ---------------------------
