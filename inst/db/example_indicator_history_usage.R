@@ -86,3 +86,14 @@ db_result <- DBI::dbGetQuery(
 )
 
 previous_indicators <- jsonlite::fromJSON(db_result$values)
+
+
+
+
+# Read all values
+
+db_result <- DBI::dbGetQuery(
+  con, "SELECT * FROM x28.indicator_history"
+)
+
+previous_indicators <- jsonlite::fromJSON(db_result$values)
