@@ -1,7 +1,9 @@
-con <- kofutils::kof_dbconnect(
-  user_name = "kofdocker",
-  db_name = "nrp77",
-  env_pass_name = "PG_PASSWORD"
+con <- DBI::dbConnect(
+  RPostgres::Postgres(),
+  host = "archivedb.kof.ethz.ch",
+  user = "kofdocker",
+  db = "nrp77",
+  password = Sys.getenv("PG_PASSWORD")
 )
 
 api_pw <- Sys.getenv("X28_API_PASSWORD")
