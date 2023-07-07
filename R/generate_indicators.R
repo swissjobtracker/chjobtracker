@@ -107,6 +107,7 @@ generate_indicators <- function(con, con_main, date=NULL, verbose = FALSE, drop_
   # for the indices we multiply the last value with the growth rate
   update[!(key %like%  "sum_clean"), index:=value*index_wlag]
 
+  index_new<-rbind(index_until_now[date<=newest_date-7], update, fill=T)
 
 
   # prnt(paste(
@@ -118,7 +119,7 @@ generate_indicators <- function(con, con_main, date=NULL, verbose = FALSE, drop_
 
 
   prnt("Converting to ts...")
-  as.list(tsbox::ts_xts(update[, .(time=date, value=index, id=key)]))
+  as.list(tsbox::ts_xts(index_new[, .(time=date, value=index, id=key)]))
 }
 
 
