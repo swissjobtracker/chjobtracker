@@ -6,7 +6,7 @@ devtools::load_all()
 
 verbose=T
 drop_lichtenstein=F
-
+date=NULL
 
 con <- RPostgres::dbConnect(
   drv = RPostgres::Postgres(),
