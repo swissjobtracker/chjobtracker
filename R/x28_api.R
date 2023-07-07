@@ -12,25 +12,30 @@ get_x28_api_data <- function(user,
                              password,
                              updates = TRUE,
                              modified_since = Sys.time() - 86400) {
-  route <- sprintf("https://api.x28.ch/export/api/jobs/%sjson",
-                   ifelse(updates, "updates/", ""))
+  route <- sprintf(
+    "https://api.x28.ch/export/api/jobs/%sjson",
+    ifelse(updates, "updates/", "")
+  )
 
   # Get initial request
   # all followind requests are the same for updates and not, only route and
   # prev_response$token are needed
 
   message("Initial request...")
-  if(updates) {
+  if (updates) {
     res <- RETRY("GET",
-                 route,
-                 query = list(
-                   date = format(modified_since, format = "%Y-%m-%dT%H:%M:%S%z")
-                 ),
-                 authenticate(user, password))
+      route,
+      query = list(
+        date = format(modified_since, format = "%Y-%m-%dT%H:%M:%S%z")
+      ),
+      authenticate(user, password)
+    )
   } else {
-    res <- RETRY("GET",
-                 route,
-                 authenticate(user, password))
+    res <- RETRY(
+      "GET",
+      route,
+      authenticate(user, password)
+    )
   }
 
   stop_for_status(res)
@@ -44,7 +49,7 @@ get_x28_api_data <- function(user,
     page0
   )
 
-  if(n_pages > 1) {
+  if (n_pages > 1) {
     pages <- c(
       pages,
       # paralellize here ;)
@@ -54,9 +59,10 @@ get_x28_api_data <- function(user,
         message(sprintf("Getting page %d/%d", pagenr, n_pages))
 
         res <- RETRY("GET",
-                     route,
-                     query = list(token = token),
-                     authenticate(user, password))
+          route,
+          query = list(token = token),
+          authenticate(user, password)
+        )
 
         stop_for_status(res)
 
@@ -86,9 +92,10 @@ x28_update_db <- function(con,
 
   x28_to_db(con, up)
   x28_db_log_event(con,
-                   t = get_x28_latest_timestamp(up),
-                   event = "x28_update_db",
-                   details = reason)
+    t = get_x28_latest_timestamp(up),
+    event = "x28_update_db",
+    details = reason
+  )
 }
 
 
@@ -112,7 +119,8 @@ x28_backlog_db <- function(con,
 
   x28_to_db(con, bl)
   x28_db_log_event(con,
-                   t = get_x28_latest_timestamp(bl),
-                   event = "x28_backlog_db",
-                   details = reason)
+    t = get_x28_latest_timestamp(bl),
+    event = "x28_backlog_db",
+    details = reason
+  )
 }

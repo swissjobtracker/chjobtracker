@@ -7,17 +7,17 @@
 #'
 #' @importFrom RPostgres dbWriteTable dbExecute
 x28_upsert_table <- function(con,
-                            x,
-                            table,
-                            field.types = c()) {
-
+                             x,
+                             table,
+                             field.types = c()) {
   message("transferring data...")
   dbWriteTable(con,
-               paste0(table, "_temp"),
-               x,
-               temporary = TRUE,
-               overwrite = TRUE,
-               field.types = field.types)
+    paste0(table, "_temp"),
+    x,
+    temporary = TRUE,
+    overwrite = TRUE,
+    field.types = field.types
+  )
 
   constraint <- sprintf("%s_pkey", table)
 
@@ -25,14 +25,16 @@ x28_upsert_table <- function(con,
   conflict <- paste('"', names(x), '"', " = EXCLUDED.", names(x), sep = "", collapse = ",\n")
 
   message("upserting rows...")
-  dbExecute(con, sprintf("
+  dbExecute(con, sprintf(
+    "
                          INSERT INTO x28.%s
                          (SELECT *
                           FROM %s_temp)
                          ON CONFLICT ON CONSTRAINT %s
                          DO UPDATE
                          SET %s",
-                         table, table, constraint, conflict))
+    table, table, constraint, conflict
+  ))
 }
 
 
@@ -54,22 +56,25 @@ x28_get_ids_to_upsert <- function(con, advertisements) {
   dbExecute(con, "SET TIMEZONE = 'Europe/Berlin'")
 
   dbWriteTable(con,
-               "x28_new_ids",
-               advertisements[, .(id, updated)],
-               temporary = TRUE,
-               overwrite = TRUE,
-               field.types = c(
-                 id = "text",
-                 updated = "timestamptz"
-               ))
+    "x28_new_ids",
+    advertisements[, .(id, updated)],
+    temporary = TRUE,
+    overwrite = TRUE,
+    field.types = c(
+      id = "text",
+      updated = "timestamptz"
+    )
+  )
 
-  dbGetQuery(con,
-             "SELECT id
+  dbGetQuery(
+    con,
+    "SELECT id
              FROM x28_new_ids
              LEFT OUTER JOIN x28.advertisements
              USING(id)
              WHERE x28_new_ids.updated > advertisements.updated
-             OR advertisements.updated IS NULL")$id
+             OR advertisements.updated IS NULL"
+  )$id
 }
 
 #' Store a x28 object to db
@@ -86,11 +91,11 @@ x28_get_ids_to_upsert <- function(con, advertisements) {
 x28_to_db <- function(con,
                       data,
                       tables = names(data)) {
-
   field.type_overrides <- list(
     advertisements = c(
       duplicategroup = "uuid",
-      qualityscore = "integer")
+      qualityscore = "integer"
+    )
   )
 
   # Column order to ensure they do not get mixed up when inserting if something
@@ -160,25 +165,27 @@ x28_to_db <- function(con,
   # api data will always be newer
   newer_ids <- x28_get_ids_to_upsert(con, data$advertisements)
 
-  tryCatch({
-    dbBegin(con)
-    for(t in tables) {
-      message(t)
-      dta <- data[[t]]
-      if(t == "advertisements") {
-        dta <- dta[id %in% newer_ids]
-      } else {
-        dta <- dta[advertisement_id %in% newer_ids]
+  tryCatch(
+    {
+      dbBegin(con)
+      for (t in tables) {
+        message(t)
+        dta <- data[[t]]
+        if (t == "advertisements") {
+          dta <- dta[id %in% newer_ids]
+        } else {
+          dta <- dta[advertisement_id %in% newer_ids]
+        }
+        x28_upsert_table(con, dta[, columns[[t]], with = FALSE], t, field.type_overrides[[t]])
       }
-      x28_upsert_table(con, dta[, columns[[t]], with = FALSE], t, field.type_overrides[[t]])
+      dbCommit(con)
+    },
+    error = function(e) {
+      message("Error! Rolling back.")
+      dbRollback(con)
+      stop(e)
     }
-    dbCommit(con)
-  },
-  error = function(e) {
-    message("Error! Rolling back.")
-    dbRollback(con)
-    stop(e)
-  })
+  )
 }
 
 #' Append a record to x28.event_log
@@ -193,9 +200,9 @@ x28_to_db <- function(con,
 #' @importFrom RPostgres dbAppendTable
 #' @importFrom DBI Id
 x28_db_log_event <- function(con,
-                              t,
-                              event,
-                              details) {
+                             t,
+                             event,
+                             details) {
   dbAppendTable(con, Id(schema = "x28", table = "event_log"), data.table(
     t = t,
     event = event,

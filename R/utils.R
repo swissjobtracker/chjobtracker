@@ -5,8 +5,8 @@
 #' @importFrom data.table year month
 #' @export
 # TODO: If at all possible I would avoid such a "data structure"
-create_num_date <- function(d){
-  10000*year(d) + 100*month(d) + mday(d)
+create_num_date <- function(d) {
+  10000 * year(d) + 100 * month(d) + mday(d)
 }
 
 #' Extraction Helper for Root Domain
@@ -22,7 +22,7 @@ get_root_domain <- function(url) {
   dd <- strsplit(d, ".", fixed = TRUE)
   sapply(dd, function(x) {
     l <- length(x)
-    paste0(x[(l-1):l], collapse = ".")
+    paste0(x[(l - 1):l], collapse = ".")
   })
 }
 
@@ -39,9 +39,12 @@ get_root_domain <- function(url) {
 #' parse_ISO8601("2022-03-01T14:57:13.839+01:00")
 parse_ISO8601 <- function(x) {
   as.POSIXct(
-    paste0(gsub("(T|\\.\\d+|:00$)", "", x),
-           "00"),
-    format = "%Y-%m-%d%H:%M:%S%z")
+    paste0(
+      gsub("(T|\\.\\d+|:00$)", "", x),
+      "00"
+    ),
+    format = "%Y-%m-%d%H:%M:%S%z"
+  )
 }
 
 #' Helper to consistently parse content from api responses
@@ -63,9 +66,20 @@ get_api_response_content <- function(response) {
 combine_x28_data <- function(x) {
   tables <- names(x[[1]])
 
-  lapply(setNames(nm = tables), function(t) {
-    unique(rbindlist(lapply(x, '[[', t), fill = TRUE, use.names = TRUE))
-  })
+  deduplicate_x28_data(
+    lapply(setNames(nm = tables), function(t) {
+      unique(rbindlist(lapply(x, "[[", t), fill = TRUE, use.names = TRUE))
+    })
+  )
+}
+
+#' Helper to remove duplicate updates in the x28 and keep the latest version
+#' only.
+deduplicate_x28_data <- function(x28_data) {
+  if (exists("advertisement_metadata", x28_data)) {
+    x28_data$advertisement_metadata <- x28_data$advertisement_metadata[, .SD[.N], by = list(advertisement_id, metadata_id, type, source)]
+  }
+  x28_data
 }
 
 #' Helper to quickly write x28 data to disk
@@ -79,7 +93,7 @@ combine_x28_data <- function(x) {
 write_x28_tables <- function(x, path_out) {
   tables <- names(x)
 
-  for(tab in tables) {
+  for (tab in tables) {
     message(sprintf("writing %s.csv", tab))
     fwrite(x[[tab]], file.path(path_out, sprintf("%s.csv", tab)))
   }
@@ -91,29 +105,31 @@ write_x28_tables <- function(x, path_out) {
 #' @export
 #' @import data.table
 read_x28_csv <- function(path_in) {
-    tables <- c("advertisements",
-                "advertisement_details",
-                "advertisement_metadata",
-                "advertisement_positions",
-                "advertisement_education_levels",
-                "advertisement_country",
-                "advertisement_canton",
-                "advertisement_postalcode",
-                "company_metadata",
-                "company_addresses")
+  tables <- c(
+    "advertisements",
+    "advertisement_details",
+    "advertisement_metadata",
+    "advertisement_positions",
+    "advertisement_education_levels",
+    "advertisement_country",
+    "advertisement_canton",
+    "advertisement_postalcode",
+    "company_metadata",
+    "company_addresses"
+  )
 
-    out <- lapply(setNames(nm = tables), function(t) {
-      message(sprintf("reading %s.csv", t))
-      fread(file.path(path_in, paste0(t, ".csv")))
-    })
+  out <- lapply(setNames(nm = tables), function(t) {
+    message(sprintf("reading %s.csv", t))
+    fread(file.path(path_in, paste0(t, ".csv")))
+  })
 
-    # When reading backlogs where no ads have a deleted set, the column
-    # comes out as NA/logical but it needs to be POSIXct
-    if(mode(out$advertisements$deleted) == "logical") {
-      out$advertisements$deleted <- as.POSIXct(out$advertisements$deleted, origin = "1970-01-01")
-    }
+  # When reading backlogs where no ads have a deleted set, the column
+  # comes out as NA/logical but it needs to be POSIXct
+  if (mode(out$advertisements$deleted) == "logical") {
+    out$advertisements$deleted <- as.POSIXct(out$advertisements$deleted, origin = "1970-01-01")
+  }
 
-    out
+  out
 }
 
 #' Helper for figuring out what the latest observation in the given data is
@@ -122,7 +138,7 @@ read_x28_csv <- function(path_in) {
 #'
 #' @export
 get_x28_latest_timestamp <- function(data) {
-  if(is.null(data$advertisements)) {
+  if (is.null(data$advertisements)) {
     stop("data does not contain an element 'advertisements'. Don't know what to do with that.")
   }
 
