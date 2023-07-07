@@ -4,18 +4,20 @@ library(timeseriesdb)
 library(RPostgres)
 
 con_nrp <- dbConnect(Postgres(),
-                     dbname = "nrp77",
-                     host = "archivedb.kof.ethz.ch",
-                     user = "kofdocker",
-                     password = Sys.getenv("PG_PASSWORD"),
-                     timezone = "Europe/Berlin")
+  dbname = "nrp77",
+  host = "archivedb.kof.ethz.ch",
+  user = "kofdocker",
+  password = Sys.getenv("PG_PASSWORD"),
+  timezone = "Europe/Berlin"
+)
 
 con_main <- db_connection_create("kofdb",
-                                 "kofdocker",
-                                 "archivedb.kof.ethz.ch",
-                                 passwd = Sys.getenv("PG_PASSWORD"))
+  "kofdocker",
+  "archivedb.kof.ethz.ch",
+  passwd = Sys.getenv("PG_PASSWORD")
+)
 
-tsl <- generate_indicators(con_nrp, TRUE)
+tsl <- generate_indicators(con_nrp, con_main, verbose = TRUE)
 
 cat("generated!\n")
 
