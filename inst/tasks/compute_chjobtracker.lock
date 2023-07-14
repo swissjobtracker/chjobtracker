@@ -1,14 +1,18 @@
 {
   "R": {
-    "Version": "4.3.0",
+    "Version": "4.3.1",
     "Repositories": [
       {
-        "Name": "CRAN",
-        "URL": "https://cran.rstudio.com"
+        "Name": "RSPM",
+        "URL": "https://packagemanager.posit.co/cran/latest"
       },
       {
-        "Name": "kofcran",
-        "URL": "http://docker.kof.ethz.ch:8000"
+        "Name": "CRAN",
+        "URL": "https://stat.ethz.ch/CRAN"
+      },
+      {
+        "Name": "KRAN",
+        "URL": "https://kran.kof.ethz.ch"
       }
     ]
   },
@@ -62,14 +66,14 @@
     },
     "Rcpp": {
       "Package": "Rcpp",
-      "Version": "1.0.10",
+      "Version": "1.0.11",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "methods",
         "utils"
       ],
-      "Hash": "e749cae40fa9ef469b6050959517453c"
+      "Hash": "ae6cbbe1492f4de79c45fce06f967ce8"
     },
     "anytime": {
       "Package": "anytime",
@@ -131,9 +135,9 @@
     },
     "chjobtracker": {
       "Package": "chjobtracker",
-      "Version": "1.1.0",
+      "Version": "2.0.0",
       "Source": "Repository",
-      "Repository": "kofcran",
+      "Repository": "KRAN",
       "Requirements": [
         "DBI",
         "R",
@@ -145,7 +149,7 @@
         "tsbox",
         "urltools"
       ],
-      "Hash": "04ac1b02b798c87d054967030def0c03"
+      "Hash": "d9096488f61ad19530c876bf64d23989"
     },
     "cli": {
       "Package": "cli",
@@ -160,20 +164,20 @@
     },
     "cpp11": {
       "Package": "cpp11",
-      "Version": "0.4.3",
+      "Version": "0.4.4",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "ed588261931ee3be2c700d22e94a29ab"
+      "Hash": "3f7d8664d7324406cd10cd650ad85e5f"
     },
     "curl": {
       "Package": "curl",
-      "Version": "5.0.0",
+      "Version": "5.0.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R"
       ],
-      "Hash": "e4f97056611e8e6b8b852d13b7400cf1"
+      "Hash": "2118af9cb164c8d2dddc7b89eaf732d9"
     },
     "data.table": {
       "Package": "data.table",
@@ -224,7 +228,7 @@
     },
     "httr": {
       "Package": "httr",
-      "Version": "1.4.5",
+      "Version": "1.4.6",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -235,17 +239,17 @@
         "mime",
         "openssl"
       ],
-      "Hash": "f6844033201269bec3ca0097bc6c97b3"
+      "Hash": "7e5e3cbd2a7bc07880c94e22348fb661"
     },
     "jsonlite": {
       "Package": "jsonlite",
-      "Version": "1.8.4",
+      "Version": "1.8.7",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "methods"
       ],
-      "Hash": "a4269a09a9b865579b2635c77e572374"
+      "Hash": "266a20443ca13c65688b2116d5220f76"
     },
     "lattice": {
       "Package": "lattice",
@@ -337,13 +341,13 @@
     },
     "renv": {
       "Package": "renv",
-      "Version": "0.17.3",
+      "Version": "1.0.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "utils"
       ],
-      "Hash": "4543b8cd233ae25c6aba8548be9e747e"
+      "Hash": "c321cd99d56443dbffd1c9e673c0c1a2"
     },
     "rlang": {
       "Package": "rlang",
@@ -358,10 +362,10 @@
     },
     "sys": {
       "Package": "sys",
-      "Version": "3.4.1",
+      "Version": "3.4.2",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "34c16f1ef796057bfa06d3f4ff818a5d"
+      "Hash": "3a1be13d68d47a8cd0bfd74739ca1555"
     },
     "timechange": {
       "Package": "timechange",
@@ -402,7 +406,7 @@
     },
     "tsbox": {
       "Package": "tsbox",
-      "Version": "0.4",
+      "Version": "0.4.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -410,7 +414,7 @@
         "anytime",
         "data.table"
       ],
-      "Hash": "b5e9cad7844f3f85640fa0dcceab4a64"
+      "Hash": "aec1064599a5857a8dacf07d0559c3a2"
     },
     "urltools": {
       "Package": "urltools",
@@ -427,7 +431,7 @@
     },
     "vctrs": {
       "Package": "vctrs",
-      "Version": "0.6.2",
+      "Version": "0.6.3",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -437,7 +441,7 @@
         "lifecycle",
         "rlang"
       ],
-      "Hash": "a745bda7aff4734c17294bb41d4e4607"
+      "Hash": "d0ef2856b83dc33ea6e255caf6229ee2"
     },
     "withr": {
       "Package": "withr",
