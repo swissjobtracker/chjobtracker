@@ -20,6 +20,9 @@ It performs the following steps:
 
 6.   Return a list of time series objects (usually to be stored in the database right away)
 
+The function "R/generate_indicators" generates the new indicators published on swissjobtracker
+To compute the index on your local computer for test purposes use the file inst/compute_index_example/compute_indices.R which will initiate the DB connections (if you have access to the DB) and call the generate indicator function
+
 ## Reading in data updates
 
 New advertisement data is read in regularly through the function `x28_update_db`
