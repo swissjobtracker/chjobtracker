@@ -6,8 +6,8 @@
 #' @param weeks_noga A data.table with the number of ads per source, week and noga letter
 #' @param weeks_isco A data.table with the number of ads per source, week and isco_1d
 #' @param weeks_canton A data.table with the number of ads per source, week and canton
-#' @export the answer to the database query that stored the indicators
-#' 
+#' @return the answer to the database query that stored the indicators
+#'
 
 save_stocks <- function(con, weeks, weeks_noga, weeks_isco, weeks_canton) {
   # Keep latest date only
@@ -40,4 +40,3 @@ save_stocks <- function(con, weeks, weeks_noga, weeks_isco, weeks_canton) {
   json_indicators <- jsonlite::toJSON(indicators)
   save_indicators(con, json_indicators) # this function saves the indicators to the database
 }
-

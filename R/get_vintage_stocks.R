@@ -2,7 +2,7 @@
 #' This function gets the stock as a json from the database and converts it back to a list of data.tables
 #' @param con A database connection
 #' @param date The date for which the vintage stocks should be retrieved
-#' @export A list of data.tables with the vintage stocks
+#' @return A list of data.tables with the vintage stocks
 #' 
 get_vintage_stocks <- function(con, date=Sys.Date()-7){
 
