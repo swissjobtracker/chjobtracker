@@ -15,10 +15,10 @@
 
 get_indices_from_db<-function(con_main){
 
-  key<-db_dataset_get_keys(con_main, "ch.kof.jobtracker_all")
+  key<-timeseriesdb::db_dataset_get_keys(con_main, "ch.kof.jobtracker_all")
 
   series<-lapply(key, function(x){
-    a<-as.data.table(db_ts_read(con_main, x, valid_on = Sys.Date()), keep.rownames = "date")
+    a<-as.data.table(timeseriesdb::db_ts_read(con_main, x, valid_on = Sys.Date()), keep.rownames = "date")
     if(nrow(a)==0){
       a<-as.data.table(list(date=as.Date(NA), index=NA))
     }else {
