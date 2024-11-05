@@ -16,6 +16,7 @@ save_stocks <- function(con, weeks, weeks_noga, weeks_isco, weeks_canton) {
   weeks_isco <- weeks_isco[date == max(date)]
   weeks_canton <- weeks_canton[date == max(date)]
 
+
   # Convert to list
   weeks_vec <- weeks[, N]
   names(weeks_vec) <- weeks[, source]
@@ -38,5 +39,10 @@ save_stocks <- function(con, weeks, weeks_noga, weeks_isco, weeks_canton) {
   )
   # to JSON
   json_indicators <- jsonlite::toJSON(indicators)
+ print( max(weeks$date))
+  print(max(weeks_noga$date))
+  print(max(weeks_isco$date))
+  print(max(weeks_canton$date))
+  stop("Let's see")
   save_indicators(con, json_indicators) # this function saves the indicators to the database
 }

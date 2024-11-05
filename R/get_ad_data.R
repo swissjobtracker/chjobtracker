@@ -18,32 +18,39 @@
 get_ad_data <- function(con,
                         start = "2016-01-01",
                         end = Sys.Date(),
-                        columns = c("id",
-                                    "duplicategroup",
-                                    "company_id",
-                                    "company_domain",
-                                    "company_recruitment_agency",
-                                    "domain",
-                                    "created",
-                                    "updated",
-                                    "deleted"
-                                    ),
+                        columns = c(
+                          "id",
+                          "duplicategroup",
+                          "company_id",
+                          "company_domain",
+                          "company_recruitment_agency",
+                          "domain",
+                          "created",
+                          "updated",
+                          "deleted"
+                        ),
                         schema = "x28") {
+  if (is.null(end)) {
+    end <- Sys.Date()
+  }
   dbExecute(con, "SET TIMEZONE = 'Europe/Berlin'")
 
   cols_quoted <- sapply(columns, dbQuoteIdentifier, conn = con)
   date_cols <- c('"created"', '"updated"', '"deleted"')
   cols_quoted[cols_quoted %in% date_cols] <- sprintf("%s::DATE", cols_quoted[cols_quoted %in% date_cols])
 
-  query <- sprintf("SELECT %s FROM %s.advertisements
+  query <- sprintf(
+    "SELECT %s FROM %s.advertisements
                    WHERE (deleted >= $1  OR deleted IS NULL)
                    AND created <= $2",
-                   paste(cols_quoted, collapse = ", "),
-                   dbQuoteIdentifier(con, schema))
+    paste(cols_quoted, collapse = ", "),
+    dbQuoteIdentifier(con, schema)
+  )
   as.data.table(dbGetQuery(con,
-                           query,
-                           params = list(
-                             start,
-                             end
-  )))
+    query,
+    params = list(
+      start,
+      end
+    )
+  ))
 }

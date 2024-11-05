@@ -17,7 +17,12 @@ con_main <- db_connection_create("kofdb",
   passwd = Sys.getenv("PG_PASSWORD")
 )
 
-tsl <- generate_indicators(con_nrp, con_main, verbose = TRUE)
+execution_date <- Sys.getenv("EXECUTION_DATE") |> as.Date()
+if (is.na(execution_date)) {
+  execution_date <- Sys.Date()
+}
+
+tsl <- generate_indicators(con_nrp, con_main, execution_date, verbose = TRUE)
 
 cat("generated!\n")
 
@@ -25,8 +30,8 @@ pblc_series <- tsl[grepl("clean\\.idx$", names(tsl))]
 rest_series <- tsl[!(names(tsl) %in% names(pblc_series))]
 
 message("Storing...")
-db_ts_store(con_main, pblc_series, "timeseries_access_public", release_date = as.POSIXct(paste0(Sys.Date(), " 12:00:00")))
-db_ts_store(con_main, rest_series, "timeseries_access_restricted")
+db_ts_store(con_main, pblc_series, "timeseries_access_public", release_date = as.POSIXct(paste0(execution_date, " 12:00:00")), valid_from = execution_date)
+db_ts_store(con_main, rest_series, "timeseries_access_restricted", valid_from = execution_date)
 db_ts_assign_dataset(con_main, names(tsl), "ch.kof.jobtracker_all")
 
 # Recreate the collection in case keys get added/removed

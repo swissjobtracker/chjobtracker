@@ -181,44 +181,50 @@ parse_x28_chunk <- function(chunk = data.frame(), text = NULL) {
 
   ads_metadata <- unique(ads_metadata)
 
-  ads_locations <- chunk_parsed[, rbindlist(
-    locations,
-    idcol = TRUE,
-    use.names = TRUE,
-    fill = TRUE
-  )][, id := chunk_parsed[.id, id]][, .id := NULL]
-  names(ads_locations) <- tolower(names(ads_locations))
-
-  if (ncol(ads_locations) == 3) {
-    # Old "type - value" pair type
-    ads_country <- ads_locations[type == "COUNTRY", .(advertisement_id = id, country = value)]
-    ads_canton <- ads_locations[type == "PROVINCE", .(advertisement_id = id, canton = value)]
-    ads_postalcode <- ads_locations[type == "POSTALCODE", .(advertisement_id = id, postalcode = value)]
+  if (all(lapply(chunk_parsed$locations, is.data.frame) == FALSE)) {
+    ads_country <- data.table(advertisement_id = c(), country = c())
+    ads_canton <- data.table(advertisement_id = c(), canton = c())
+    ads_postalcode <- data.table(advertisement_id = c(), postalcode = c())
   } else {
-    ads_country <- ads_locations[, .(country = unique(country)), by = .(advertisement_id = id)][!is.na(country)]
-    ads_canton <- ads_locations[, .(canton = unique(province)), by = .(advertisement_id = id)][!is.na(canton)]
+    ads_locations <- chunk_parsed[, rbindlist(
+      lapply(locations, as.data.table),
+      idcol = TRUE,
+      use.names = TRUE,
+      fill = TRUE
+    )][, id := chunk_parsed[.id, id]][, .id := NULL]
+    names(ads_locations) <- tolower(names(ads_locations))
 
-    # newer / API format bundles them
-    if ("postalcodes" %in% names(ads_locations)) {
-      # Ensure (at least the first) postalcodes is typed
-      # otherwise data.table can't infer the type of the new column
-      ads_locations[sapply(postalcodes, length) == 0, postalcodes := list(numeric())]
-      ads_postalcode <- ads_locations[,
-        .(postalcode = as.numeric(unique(unlist(postalcodes)))),
-        by = .(advertisement_id = id)
-      ][
-        !is.na(postalcode)
-      ]
+    if (ncol(ads_locations) == 3) {
+      # Old "type - value" pair type
+      ads_country <- ads_locations[type == "COUNTRY", .(advertisement_id = id, country = value)]
+      ads_canton <- ads_locations[type == "PROVINCE", .(advertisement_id = id, canton = value)]
+      ads_postalcode <- ads_locations[type == "POSTALCODE", .(advertisement_id = id, postalcode = value)]
     } else {
-      ads_postalcode <- ads_locations[,
-        .(postalcode = unique(postalcode)),
-        by = .(advertisement_id = id)
-      ][
-        !is.na(postalcode)
-      ]
+      ads_country <- ads_locations[, .(country = unique(country)), by = .(advertisement_id = id)][!is.na(country)]
+      ads_canton <- ads_locations[, .(canton = unique(province)), by = .(advertisement_id = id)][!is.na(canton)]
+
+      # newer / API format bundles them
+      if ("postalcodes" %in% names(ads_locations)) {
+        # Ensure (at least the first) postalcodes is typed
+        # otherwise data.table can't infer the type of the new column
+        ads_locations[sapply(postalcodes, length) == 0, postalcodes := list(numeric())]
+        ads_postalcode <- ads_locations[,
+          .(postalcode = as.numeric(unique(unlist(postalcodes)))),
+          by = .(advertisement_id = id)
+        ][
+          !is.na(postalcode)
+        ]
+      } else {
+        ads_postalcode <- ads_locations[,
+          .(postalcode = unique(postalcode)),
+          by = .(advertisement_id = id)
+        ][
+          !is.na(postalcode)
+        ]
+      }
     }
+    ads_postalcode <- ads_postalcode[postalcode != "null"]
   }
-  ads_postalcode <- ads_postalcode[postalcode != "null"]
 
   comps_metadata <- rbindlist(chunk_parsed$company.metadata, idcol = "md_id", use.names = TRUE)
 

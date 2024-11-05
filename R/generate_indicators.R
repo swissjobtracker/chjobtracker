@@ -22,11 +22,18 @@ generate_indicators <- function(con, con_main, date = NULL, verbose = FALSE, dro
   prnt <- function(x) {
     if (verbose) message(x)
   }
+  if(is.null(date)) {
+    date <- Sys.Date()
+  }
+  date <- as.Date(date)
+  if(is.na(date)) {
+    date <- Sys.Date()
+  }
 
 
   # Load the vacancy data from the database
   prnt("Loading data...")
-  ads <- get_ad_data(con)
+  ads <- get_ad_data(con, end=date)
 
   # Drop ads from Lichtenstein
   if (drop_lichtenstein) {
@@ -62,6 +69,8 @@ generate_indicators <- function(con, con_main, date = NULL, verbose = FALSE, dro
   ads_noga <- ads_merge_noga(con, ads_prepared)
 
 
+  print(max(ads_prepared$created))
+  print(max(ads_prepared$updated))
   prnt("Compute this week's stock of ads by source")
   #' Compute the stock of ads for each source (all company domains together and by job portal)
   #' Also compute them by the three dimensions canton, occupation and industry
