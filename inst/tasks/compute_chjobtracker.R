@@ -1,6 +1,6 @@
 library(chjobtracker)
 library(tsbox)
-library(timeseriesdb)
+library(koftsdb)
 library(RPostgres)
 
 con_nrp <- dbConnect(Postgres(),
