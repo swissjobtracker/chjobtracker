@@ -39,10 +39,5 @@ save_stocks <- function(con, weeks, weeks_noga, weeks_isco, weeks_canton) {
   )
   # to JSON
   json_indicators <- jsonlite::toJSON(indicators)
- print( max(weeks$date))
-  print(max(weeks_noga$date))
-  print(max(weeks_isco$date))
-  print(max(weeks_canton$date))
-  stop("Let's see")
   save_indicators(con, json_indicators) # this function saves the indicators to the database
 }
