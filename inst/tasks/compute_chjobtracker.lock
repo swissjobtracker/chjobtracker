@@ -344,7 +344,7 @@
     },
     "chjobtracker": {
       "Package": "chjobtracker",
-      "Version": "2.0.6",
+      "Version": "2.0.8",
       "Source": "Repository",
       "Type": "Package",
       "Title": "NRP77 Computation Backend",
@@ -684,7 +684,7 @@
     },
     "jsonlite": {
       "Package": "jsonlite",
-      "Version": "1.9.1",
+      "Version": "2.0.0",
       "Source": "Repository",
       "Title": "A Simple and Robust JSON Parser and Generator for R",
       "License": "MIT + file LICENSE",
@@ -706,11 +706,11 @@
         "R.rsp",
         "sf"
       ],
-      "RoxygenNote": "7.2.3",
+      "RoxygenNote": "7.3.2",
       "Encoding": "UTF-8",
       "NeedsCompilation": "yes",
       "Author": "Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-0289>), Duncan Temple Lang [ctb], Lloyd Hilaiel [cph] (author of bundled libyajl)",
-      "Repository": "RSPM"
+      "Repository": "CRAN"
     },
     "lattice": {
       "Package": "lattice",
