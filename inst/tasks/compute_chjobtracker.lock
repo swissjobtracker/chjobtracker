@@ -457,7 +457,7 @@
     },
     "chjobtracker": {
       "Package": "chjobtracker",
-      "Version": "2.0.8",
+      "Version": "2.0.10",
       "Source": "Repository",
       "Type": "Package",
       "Title": "NRP77 Computation Backend",
@@ -474,7 +474,8 @@
         "DBI",
         "httr",
         "tsbox",
-        "magrittr"
+        "magrittr",
+        "koftsdb"
       ],
       "Date": "2021-09-10",
       "License": "GPL-2",
