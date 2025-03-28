@@ -457,7 +457,7 @@
     },
     "chjobtracker": {
       "Package": "chjobtracker",
-      "Version": "2.0.10",
+      "Version": "2.0.11",
       "Source": "Repository",
       "Type": "Package",
       "Title": "NRP77 Computation Backend",
@@ -936,7 +936,7 @@
     },
     "koftsdb": {
       "Package": "koftsdb",
-      "Version": "1.2.3",
+      "Version": "1.2.4",
       "Source": "Repository",
       "Title": "Time Series tools to store and read data from the KOF Database",
       "Authors@R": "c( person(\"Stéphane\", \"Bisinger\", , \"bisinger@kof.ethz.ch\", role = c(\"aut\", \"cre\")), person(\"Matthias\", \"Bannert\", , \"bannert@kof.ethz.ch\", role = \"aut\"), person(\"Severin\", \"Thöni\", , \"sthoeni@kof.ethz.ch\", role = \"aut\"), person(\"Ioan Gabriel\", \"Bucur\", role = \"ctb\") )",
@@ -962,7 +962,7 @@
       "NeedsCompilation": "no",
       "Author": "Stéphane Bisinger [aut, cre], Matthias Bannert [aut], Severin Thöni [aut], Ioan Gabriel Bucur [ctb]",
       "Maintainer": "Stéphane Bisinger <bisinger@kof.ethz.ch>",
-      "Repository": "https://kran.kof.ethz.ch"
+      "Repository": "KRAN"
     },
     "lattice": {
       "Package": "lattice",
