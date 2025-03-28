@@ -21,5 +21,5 @@ LazyData: true
 Maintainer: Jeremias Klaeui <jeremias.klaeui@unil.ch>
 NeedsCompilation: no
 Packaged: 2018-04-24 11:21:04 UTC; mbannert
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Encoding: UTF-8

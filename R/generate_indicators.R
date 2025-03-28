@@ -7,6 +7,7 @@ library(magrittr)
 #' \code{compute_indices.R} script.
 #'
 #'
+#' @export
 #' @param con A database connection to the NRP77 database
 #'  (archivedb.kof.ethz.ch)
 #' @param con_main A database connection to the main database
